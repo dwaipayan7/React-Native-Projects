@@ -1,38 +1,45 @@
-import { Alert, Button, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  Alert,
+  Button,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import React, { useEffect } from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import { useAppDispatch, useAppSelector } from '../hooks/hooks';
-import { registerUser } from '../features/auth/slices/AuthSlice';
+// import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../slices/AuthSlice';
+import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 
-const RegisterSchema = Yup.object().shape({
-  name: Yup.string().min(2, 'Too Short').required(),
+const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid Email').required(),
   password: Yup.string().min(4, 'Too Short').required(),
 });
 
-const RegisterPage = ({navigation}) => {
-
+const LoginPage = ({ navigation }) => {
   const dispatch = useAppDispatch();
-
+  // const auth = useSelector((state) => state.auth);
   const auth = useAppSelector(state => state);
 
-  useEffect(()=> {
-    if(auth?.token){
+  useEffect(() => {
+    if (auth?.token) {
       navigation.navigate('Home');
     }
-     if (auth?.error) {
-          Alert.alert('Login Failed', auth.error);
-        }
-  }, [auth?.token, auth?.error, navigation])
+    if (auth?.error) {
+      Alert.alert('Login Failed', auth.error);
+    }
+  }, [auth?.token, auth?.error, navigation]);
 
   return (
     <Formik
-      initialValues={{ name: '', email: '', password: '' }}
-      validationSchema={RegisterSchema}
-      onSubmit={(values) => {
-        // Alert.alert('Form Submitted', JSON.stringify(values, null, 2));
-        dispatch(registerUser(values))
+      initialValues={{ email: '', password: '' }}
+      validationSchema={LoginSchema}
+      onSubmit={values => {
+        // Alert.alert('Login Data', JSON.stringify(values, null, 2));
+        dispatch(loginUser(values));
       }}
     >
       {({
@@ -44,19 +51,7 @@ const RegisterPage = ({navigation}) => {
         touched,
       }) => (
         <View style={styles.container}>
-          <Text style={styles.title}>RegisterPage</Text>
-
-          <TextInput
-            style={styles.textInput}
-            placeholder="Name"
-            placeholderTextColor="gray"
-            onChangeText={handleChange('name')}
-            onBlur={handleBlur('name')}
-            value={values.name}
-          />
-          {touched.name && errors.name && (
-            <Text style={styles.error}>{errors.name}</Text>
-          )}
+          <Text style={styles.title}>LoginPage</Text>
 
           <TextInput
             style={styles.textInput}
@@ -69,12 +64,10 @@ const RegisterPage = ({navigation}) => {
           {touched.email && errors.email && (
             <Text style={styles.error}>{errors.email}</Text>
           )}
-
           <TextInput
             style={styles.textInput}
             placeholder="Password"
             placeholderTextColor="gray"
-            secureTextEntry
             onChangeText={handleChange('password')}
             onBlur={handleBlur('password')}
             value={values.password}
@@ -84,13 +77,14 @@ const RegisterPage = ({navigation}) => {
           )}
 
           <View style={styles.buttonStyle}>
-            <Button title="Register" onPress={() => handleSubmit()} />
+            <Button title="Login" onPress={() => handleSubmit()} />
           </View>
 
           <View style={styles.account}>
-            <Text>Already have an account?{' '}</Text>
-            <Pressable onPress={() => navigation.navigate('Login')}>
-              <Text style={{ color: 'blue' }}>Login</Text>
+            <Text> Don't have an account? </Text>
+            {/* <Pressable onPress={() => navigation.navigate('Register')}> */}
+            <Pressable onPress={() => navigation.navigate('MainPage')}>
+              <Text style={{ color: 'blue' }}>Register</Text>
             </Pressable>
           </View>
         </View>
@@ -99,7 +93,7 @@ const RegisterPage = ({navigation}) => {
   );
 };
 
-export default RegisterPage;
+export default LoginPage;
 
 const styles = StyleSheet.create({
   container: {

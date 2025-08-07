@@ -1,45 +1,38 @@
-import {
-  Alert,
-  Button,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { Alert, Button, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import React, { useEffect } from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-// import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../features/auth/slices/AuthSlice';
-import { useAppDispatch, useAppSelector } from '../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
+import { registerUser } from '../slices/AuthSlice';
 
-const LoginSchema = Yup.object().shape({
+const RegisterSchema = Yup.object().shape({
+  name: Yup.string().min(2, 'Too Short').required(),
   email: Yup.string().email('Invalid Email').required(),
   password: Yup.string().min(4, 'Too Short').required(),
 });
 
-const LoginPage = ({ navigation }) => {
+const RegisterPage = ({navigation}) => {
+
   const dispatch = useAppDispatch();
-  // const auth = useSelector((state) => state.auth);
+
   const auth = useAppSelector(state => state);
 
-  useEffect(() => {
-    if (auth?.token) {
+  useEffect(()=> {
+    if(auth?.token){
       navigation.navigate('Home');
     }
-    if (auth?.error) {
-      Alert.alert('Login Failed', auth.error);
-    }
-  }, [auth?.token, auth?.error, navigation]);
+     if (auth?.error) {
+          Alert.alert('Login Failed', auth.error);
+        }
+  }, [auth?.token, auth?.error, navigation])
 
   return (
     <Formik
-      initialValues={{ email: '', password: '' }}
-      validationSchema={LoginSchema}
-      onSubmit={values => {
-        // Alert.alert('Login Data', JSON.stringify(values, null, 2));
-        dispatch(loginUser(values));
+      initialValues={{ name: '', email: '', password: '' }}
+      validationSchema={RegisterSchema}
+      onSubmit={(values) => {
+        // Alert.alert('Form Submitted', JSON.stringify(values, null, 2));
+        dispatch(registerUser(values))
       }}
     >
       {({
@@ -51,7 +44,19 @@ const LoginPage = ({ navigation }) => {
         touched,
       }) => (
         <View style={styles.container}>
-          <Text style={styles.title}>LoginPage</Text>
+          <Text style={styles.title}>RegisterPage</Text>
+
+          <TextInput
+            style={styles.textInput}
+            placeholder="Name"
+            placeholderTextColor="gray"
+            onChangeText={handleChange('name')}
+            onBlur={handleBlur('name')}
+            value={values.name}
+          />
+          {touched.name && errors.name && (
+            <Text style={styles.error}>{errors.name}</Text>
+          )}
 
           <TextInput
             style={styles.textInput}
@@ -64,10 +69,12 @@ const LoginPage = ({ navigation }) => {
           {touched.email && errors.email && (
             <Text style={styles.error}>{errors.email}</Text>
           )}
+
           <TextInput
             style={styles.textInput}
             placeholder="Password"
             placeholderTextColor="gray"
+            secureTextEntry
             onChangeText={handleChange('password')}
             onBlur={handleBlur('password')}
             value={values.password}
@@ -77,13 +84,13 @@ const LoginPage = ({ navigation }) => {
           )}
 
           <View style={styles.buttonStyle}>
-            <Button title="Login" onPress={() => handleSubmit()} />
+            <Button title="Register" onPress={() => handleSubmit()} />
           </View>
 
           <View style={styles.account}>
-            <Text> Don't have an account? </Text>
-            <Pressable onPress={() => navigation.navigate('Register')}>
-              <Text style={{ color: 'blue' }}>Register</Text>
+            <Text>Already have an account?{' '}</Text>
+            <Pressable onPress={() => navigation.navigate('Login')}>
+              <Text style={{ color: 'blue' }}>Login</Text>
             </Pressable>
           </View>
         </View>
@@ -92,7 +99,7 @@ const LoginPage = ({ navigation }) => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
 
 const styles = StyleSheet.create({
   container: {
