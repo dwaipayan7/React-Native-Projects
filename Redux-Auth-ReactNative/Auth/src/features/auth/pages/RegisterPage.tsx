@@ -2,8 +2,8 @@ import { Alert, Button, Pressable, StyleSheet, Text, TextInput, View } from 'rea
 import React, { useEffect } from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import { registerUser } from '../slices/AuthSlice';
+import { useAppDispatch,useAppSelector } from '../../../components/hooks/hooks';
 
 const RegisterSchema = Yup.object().shape({
   name: Yup.string().min(2, 'Too Short').required(),

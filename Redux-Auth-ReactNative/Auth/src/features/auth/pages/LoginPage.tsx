@@ -12,7 +12,7 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 // import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../slices/AuthSlice';
-import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
+import { useAppDispatch , useAppSelector } from '../../../components/hooks/hooks';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid Email').required(),
@@ -83,7 +83,7 @@ const LoginPage = ({ navigation }) => {
           <View style={styles.account}>
             <Text> Don't have an account? </Text>
             {/* <Pressable onPress={() => navigation.navigate('Register')}> */}
-            <Pressable onPress={() => navigation.navigate('MainPage')}>
+            <Pressable onPress={() => navigation.navigate('Main')}>
               <Text style={{ color: 'blue' }}>Register</Text>
             </Pressable>
           </View>
