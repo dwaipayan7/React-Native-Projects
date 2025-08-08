@@ -14,8 +14,9 @@ import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import { useAppDispatch, useAppSelector } from '../components/hooks/hooks';
+import { useAppDispatch } from '../components/hooks/hooks';
 import { setProfile } from '../features/auth/slices/ProfileSlice';
+import { launchImageLibrary } from 'react-native-image-picker';
 // import { useDispatch } from 'react-redux';
 
 const ProfileSchema = Yup.object().shape({
@@ -34,6 +35,24 @@ const ProfilePage = () => {
   // const [phone, setPhone] = useState('');
 
   const genders = ['Male', 'Female', 'Other'];
+
+  const [profileImage, setProfileImage] = useState(
+    'https://randomuser.me/api/portraits/men/1.jpg',
+  );
+
+  //image pickup
+  const pickImage = ({setFieldValue}) => {
+    launchImageLibrary({ mediaType: 'photo', quality: 1 }, response => {
+      if (response.didCancel) {
+        console.log('User Cancelled Image Picker');
+      } else if (response.errorMessage) {
+        console.log('Error while picking image', response.errorMessage);
+      } else if (response.assets && response.assets.length > 0) {
+        setProfileImage(response.assets[0].uri);
+        setFieldValue('profileImage', response.assets[0].uri);
+      }
+    });
+  };
 
   const navigation = useNavigation();
 
@@ -71,6 +90,7 @@ const ProfilePage = () => {
     email: '',
     phone: '',
     gender: '',
+    profileImage: 'https://randomuser.me/api/portraits/men/1.jpg',
   };
 
   return (
@@ -78,7 +98,12 @@ const ProfilePage = () => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity>
-          <MaterialIcons name="arrow-back-ios" size={24} color="black" onPress={navigation.navigate('Tabs', { screen: 'Main' })}/>
+          <MaterialIcons
+            name="arrow-back-ios"
+            size={24}
+            color="black"
+            onPress={navigation.navigate('Tabs', { screen: 'Main' })}
+          />
         </TouchableOpacity>
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>Profile Page</Text>
@@ -91,7 +116,7 @@ const ProfilePage = () => {
         initialValues={initialValues}
         validationSchema={ProfileSchema}
         onSubmit={(values, { resetForm }) => {
-          dispatch(setProfile(values));
+          dispatch(setProfile({...values, profileImage}));
           navigation.navigate('Details');
           resetForm();
         }}
@@ -107,12 +132,14 @@ const ProfilePage = () => {
         }) => (
           <>
             <View style={styles.profileContainer}>
-              <Image
-                source={{
-                  uri: 'https://randomuser.me/api/portraits/men/1.jpg',
-                }}
-                style={styles.profileImage}
-              />
+              <TouchableOpacity onPress={pickImage}>
+                <Image
+                  source={{
+                    uri: profileImage,
+                  }}
+                  style={styles.profileImage}
+                />
+              </TouchableOpacity>
               <Text style={styles.profileNameText}>Dwaipayan Biswas</Text>
               <Text style={styles.profileEmailText}>
                 biswasdwai007@gmail.com

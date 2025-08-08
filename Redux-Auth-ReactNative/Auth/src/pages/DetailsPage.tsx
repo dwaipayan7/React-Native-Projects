@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import React from 'react';
 import { useAppSelector } from '../components/hooks/hooks';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -13,6 +13,7 @@ export const CardView = ({
   icon,
   fullWidth,
   height,
+  image, // optional
 }) => {
   return (
     <TouchableOpacity
@@ -29,14 +30,33 @@ export const CardView = ({
         <Text style={styles.title}>{title}</Text>
         {icon}
       </View>
+
       <Text style={{ fontSize: 14, color: '#333', marginBottom: 2 }}>
         {value}
       </Text>
+
       {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+
+      {/* Render only if image is passed */}
+      {image ? (
+        <View style={styles.image}>
+          <Image
+            source={{ uri: image }}
+            style={{
+              width: 100,
+              height: 100,
+              resizeMode: 'cover',
+              borderRadius: 50,
+        
+            }}
+          />
+        </View>
+      ) : null}
     </TouchableOpacity>
   );
 };
 
+//  {  //'https://randomuser.me/api/portraits/men/1.jpg'}
 //{ route }
 
 const DetailsPage = () => {
@@ -64,6 +84,7 @@ const DetailsPage = () => {
             icon={<MaterialIcons name="arrow-upward" size={20} color="black" />}
             fullWidth
             height={200}
+            image={profile.profileImage}
           />
         </View>
         <View style={styles.grid}>
@@ -75,6 +96,7 @@ const DetailsPage = () => {
             icon={<MaterialIcons name="timer" size={20} color="black" />}
             fullWidth={undefined}
             height={150}
+            image={undefined}
           />
 
           <CardView
@@ -85,6 +107,7 @@ const DetailsPage = () => {
             icon={<MaterialIcons name="fire-hydrant" size={20} color="black" />}
             fullWidth={undefined}
             height={150}
+            image={undefined}
           />
         </View>
 
@@ -97,6 +120,7 @@ const DetailsPage = () => {
             icon={<MaterialIcons name="power" size={20} color="black" />}
             fullWidth={undefined}
             height={150}
+            image={undefined}
           />
 
           <CardView
@@ -107,6 +131,7 @@ const DetailsPage = () => {
             icon={<MaterialIcons name="star" size={20} color="black" />}
             fullWidth={undefined}
             height={150}
+            image={undefined}
           />
         </View>
         <View style={styles.grid}>
@@ -118,6 +143,7 @@ const DetailsPage = () => {
             icon={<MaterialIcons name="power" size={20} color="black" />}
             fullWidth={undefined}
             height={150}
+            image={undefined}
           />
 
           <CardView
@@ -128,6 +154,7 @@ const DetailsPage = () => {
             icon={<MaterialIcons name="star" size={20} color="black" />}
             fullWidth={undefined}
             height={150}
+            image={undefined}
           />
         </View>
       </SafeAreaView>
@@ -144,6 +171,11 @@ const DetailsPage = () => {
 export default DetailsPage;
 
 const styles = StyleSheet.create({
+  image: {
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+  },
+
   container: {
     flex: 1,
     backgroundColor: '#F8F9FD',
