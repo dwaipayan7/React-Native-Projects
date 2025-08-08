@@ -29,7 +29,9 @@ export const CardView = ({
         <Text style={styles.title}>{title}</Text>
         {icon}
       </View>
-      <Text style={styles.value}>{value}</Text>
+      <Text style={{ fontSize: 14, color: '#333', marginBottom: 2 }}>
+        {value}
+      </Text>
       {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
     </TouchableOpacity>
   );
@@ -53,9 +55,11 @@ const DetailsPage = () => {
         </View>
         <View style={styles.headerElement}>
           <CardView
-            title={profile.firstName + ' ' + profile.lastName}
-            value={profile.email}
-            subtitle={profile.phone + '\n' + profile.gender}
+            title={'Name: ' + profile.firstName + ' ' + profile.lastName}
+            value={'Email: ' + profile.email}
+            subtitle={
+              'Phone: ' + profile.phone + '\n' + 'Gender: ' + profile.gender
+            }
             bgColor="#FFD75F"
             icon={<MaterialIcons name="arrow-upward" size={20} color="black" />}
             fullWidth
@@ -155,7 +159,7 @@ const styles = StyleSheet.create({
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    marginBottom: 2,
   },
   grid: {
     flexDirection: 'row',
@@ -172,7 +176,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   title: {
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: '600',
     color: '#000',
   },
