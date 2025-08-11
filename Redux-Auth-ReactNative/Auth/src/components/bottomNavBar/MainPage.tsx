@@ -2,27 +2,30 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomePage from '../../pages/HomePage';
 import DetailsPage from '../../pages/DetailsPage';
 import ProfilePage from '../../pages/ProfilePage';
-import { MaterialIcons } from '@react-native-vector-icons/material-icons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { useAppSelector } from '../hooks/hooks';
+import React from 'react';
 
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator = () => {
+  const darkMode = useAppSelector(state => state.theme.darkMode);
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: '#007bff',
-        tabBarInactiveTintColor: '#777',
+        tabBarActiveTintColor: darkMode ? '#4da6ff' : '#007bff',
+        tabBarInactiveTintColor: darkMode ? '#aaa' : '#777',
         tabBarStyle: {
-          backgroundColor: '#fff',
+          backgroundColor: darkMode ? '#121212' : '#fff',
           borderTopWidth: 0.5,
-          borderTopColor: '#ccc',
+          borderTopColor: darkMode ? '#333' : '#ccc',
           paddingBottom: 5,
           height: 60,
         },
-
         tabBarIcon: ({ color, size }) => {
-          let iconName: string;
+          let iconName: string = '';
 
           if (route.name === 'Home') {
             iconName = 'home';

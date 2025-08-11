@@ -13,43 +13,45 @@ import createTodoQueryOptions from '../components/queryOptions/todoQueryOptions'
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '../components/hooks/hooks';
-import { MaterialIcons } from '@react-native-vector-icons/material-icons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation, DrawerActions } from '@react-navigation/native';
 
-
-//{ navigation }
 const HomePage = () => {
-
-  // const drawer = useNavigation();
   const navigation = useNavigation();
-
   const dispatch = useAppDispatch();
   const auth = useAppSelector(state => state.token);
+  const darkMode = useAppSelector(state => state.theme.darkMode);
 
   const { data, isRefetching } = useSuspenseQuery(createTodoQueryOptions());
 
   const handleLogout = () => {
     dispatch(logout());
-    if (auth === null) {
-      // navigation.navigate('Login');
-    }
+  };
+
+  const themeStyles = {
+    backgroundColor: darkMode ? '#121212' : '#f5f5f5',
+    textColor: darkMode ? '#ffffff' : '#000000',
+    cardBg: darkMode ? '#1e1e1e' : '#cccccc',
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: themeStyles.backgroundColor }]}
+    >
       <TouchableOpacity
         style={styles.drawerIcon}
-        // onPress={() => navigation.openDrawer()
-       onPress={() => navigation.dispatch(DrawerActions.openDrawer())
-
-
-
-        } 
+        onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
       >
-        <MaterialIcons name="menu" size={28} color="#000" />
+        <MaterialIcons
+          name="menu"
+          size={28}
+          color={themeStyles.textColor}
+        />
       </TouchableOpacity>
 
-      <Text style={styles.header}>Welcome Home</Text>
+      <Text style={[styles.header, { color: themeStyles.textColor }]}>
+        Welcome Home
+      </Text>
 
       {isRefetching ? (
         <View style={styles.loadingContainer}>
@@ -58,9 +60,14 @@ const HomePage = () => {
       ) : (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {data?.map((todo: any) => (
-            <View key={todo.id} style={styles.card}>
-              <Text style={styles.title}>{todo.title}</Text>
-              <Text style={styles.status}>
+            <View
+              key={todo.id}
+              style={[styles.card, { backgroundColor: themeStyles.cardBg }]}
+            >
+              <Text style={[styles.title, { color: themeStyles.textColor }]}>
+                {todo.title}
+              </Text>
+              <Text style={[styles.status, { color: themeStyles.textColor }]}>
                 {todo.completed ? 'Completed' : 'Pending'}
               </Text>
             </View>
@@ -80,7 +87,6 @@ export default HomePage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
     paddingHorizontal: 20,
   },
   header: {
@@ -94,19 +100,16 @@ const styles = StyleSheet.create({
   },
   card: {
     borderRadius: 12,
-    backgroundColor: 'gray',
     padding: 15,
     marginBottom: 10,
   },
   title: {
-    color: 'white',
     fontWeight: '600',
     fontSize: 18,
     marginBottom: 4,
   },
   status: {
     fontSize: 14,
-    color: 'white',
   },
   buttonContainer: {
     marginTop: 20,

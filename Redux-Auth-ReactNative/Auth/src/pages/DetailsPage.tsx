@@ -63,15 +63,22 @@ const DetailsPage = () => {
   // const { firstName, lastName, email, phone, gender } = route.params;
 
   const profile = useAppSelector(state => state.profile);
+  const darkMode = useAppSelector(state => state.theme.darkMode)
+
+    const themeStyles = {
+    backgroundColor: darkMode ? '#121212' : '#f5f5f5',
+    textColor: darkMode ? '#ffffff' : '#000000',
+    cardBg: darkMode ? '#1e1e1e' : '#cccccc',
+  };
 
   return (
     <ScrollView
-      style={styles.container}
+      style={[styles.container, {backgroundColor: themeStyles.backgroundColor}]}
       contentContainerStyle={{ paddingBottom: 20, padding: 16 }}
     >
       <SafeAreaView>
         <View style={styles.header}>
-          <Text style={styles.headerText}>👋Hi {profile.firstName}</Text>
+          <Text style={[styles.headerText, {color: themeStyles.textColor}]}>👋Hi {profile.firstName}</Text>
         </View>
         <View style={styles.headerElement}>
           <CardView
